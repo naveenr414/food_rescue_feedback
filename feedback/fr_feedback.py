@@ -230,6 +230,32 @@ def get_feedback_by_date(conn,start_date,end_date):
 
     return feedbacks
 
+def get_instruction_by_rescue(cursor,donor_location_id,volunteer_comment):
+    """Get a rescue, instruction, and comment
+
+    Arguments:
+        cursor: Database Cursor for PSQL
+        donor_location_id: Integer, donor location
+        volunteer_comment: String, volunteer_comment for a particular rescue
+    
+    Returns: String, with donor-recipient-etc.
+    """
+
+    feedback = get_feedback_by_id(cursor,donor_location_id)
+    feedback = [i for i in feedback if i['volunteer_comment'] == volunteer_comment]
+    random_feedback = feedback[0]
+    comment = volunteer_comment
+    recipient_location_id = random_feedback['recipient_location_id']
+
+    instruction = get_instructions_by_id(cursor,donor_location_id)[0]
+
+    donor_name = get_donor_name(cursor,donor_location_id)
+    recipient_name = get_recipient_name(cursor,recipient_location_id)
+
+    return "For this rescue, the donor is {}, and its location is {}; the recipient is {}, and its location is {}. Instruction: {}. Comment: {}.".format(donor_name[1],donor_name[0],recipient_name[1],recipient_name[0],instruction,comment)
+
+
+
 def get_random_rescue(cursor,donor_location_id):
     """Get a random rescue, instruction, and comment
 
@@ -251,6 +277,38 @@ def get_random_rescue(cursor,donor_location_id):
     recipient_name = get_recipient_name(cursor,recipient_location_id)
 
     return "For this rescue, the donor is {}, and its location is {}; the recipient is {}, and its location is {}. Instruction: {}. Comment: {}.".format(donor_name[1],donor_name[0],recipient_name[1],recipient_name[0],instruction,comment)
+
+def improve_instructions(client,cursor,info_dataframe):
+    """Suggest a list of improvements to instructions, given instructions to improve
+    
+    Arguments:
+        client: OpenAI client
+        info_dataframe: DataFrame with information on the instructions to update
+    
+    Returns: List of updated instructions"""
+
+    new_instructions = []
+    raw_prompt = open("../../data/prompts/information_specific_update.txt").read()
+    
+    for i in range(len(info_dataframe)):
+        print("On {} out of {}".format(i+1,len(info_dataframe)))
+        full_prompt = raw_prompt + "\n"+get_instruction_by_rescue(
+            cursor,info_dataframe.iloc[i].donor_location_id,info_dataframe.iloc[i].volunteer_comment)
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo-0125",
+                messages=[{"role": "user", "content": full_prompt}],
+                response_format={"type": "json_object"},
+            )
+            output = response.choices[0].message.content
+            feedback_info = json.loads(output)
+            new_instruction = feedback_info['info_update']
+            new_instructions.append(new_instruction)
+        except Exception as e:
+            print(f"Error processing feedback {e}")
+
+    return new_instructions
 
 def analyze_feedback(client, feedbacks, prompts, tasks):
     """Analyze the feedback using prompts to classify different properties

@@ -43,6 +43,8 @@ def calculate_donor_statistics(feedbacks, labeled_feedbacks):
             index = donor_stats[donor_stats['donor_location_id'] == donor_location_id].index[0]
             donor_stats.at[index, 'volunteer_comments'].append(labeled_feedbacks.loc[i, 'volunteer_comment'])
 
+    donor_stats['feedback_count'] = donor_stats['volunteer_comments'].apply(len)
+
     # Calculate score based on average volunteer rating and donor problems
     donor_stats['score'] = (4 - donor_stats['average_volunteer_rating']) + donor_stats['inadequate_food'] + donor_stats[
         'donor_contact_problem']
@@ -78,6 +80,7 @@ def calculate_recipient_statistics(feedbacks, labeled_feedbacks):
     # Initialize columns for recipient problems and volunteer comments
     recipient_stats['recipient_problem'] = 0
     recipient_stats['volunteer_comments'] = [[] for _ in range(len(recipient_stats))]
+    recipient_stats['feedback_count'] = len(recipient_stats)
 
     # Update recipient problems and comments based on labeled feedbacks
     for i in range(len(labeled_feedbacks)):
@@ -90,6 +93,7 @@ def calculate_recipient_statistics(feedbacks, labeled_feedbacks):
     # Calculate score based on average volunteer rating and recipient problems
     recipient_stats['score'] = (4 - recipient_stats['average_volunteer_rating']) + recipient_stats['recipient_problem']
     recipient_stats = recipient_stats.sort_values(by='score', ascending=False)
+    recipient_stats['feedback_count'] = recipient_stats['volunteer_comments'].apply(len)
 
     return recipient_stats
 
