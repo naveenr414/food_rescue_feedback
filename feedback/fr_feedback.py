@@ -149,7 +149,7 @@ def get_recipient_name(cursor,recipient_location_id):
     return recipient_name, real_recipient_name
 
 
-def get_instructions_by_id(cursor,donor_location_id):
+def get_instructions_by_id_donor(cursor,donor_location_id):
     """List all the instructions received for a donor_location
     
     Arguments: 
@@ -167,6 +167,26 @@ def get_instructions_by_id(cursor,donor_location_id):
     all_instructions = [i['text'] for i in all_instructions]
 
     return all_instructions 
+
+def get_instructions_by_id_recipient(cursor,recipient_location_id):
+    """List all the instructions received for a donor_location
+    
+    Arguments: 
+        donor_location_id: Integer, the donor location we're looking at
+    
+    Returns: List of Strings, all the feedback received"""
+
+    query = ("SELECT text FROM"
+            " SPECIAL_INSTRUCTIONS"
+            " WHERE OWNER_ID={}"
+            " AND OWNER_TYPE='RecipientLocation' "
+    )
+    query = query.format(recipient_location_id)
+    all_instructions = run_query(cursor,query)
+    all_instructions = [i['text'] for i in all_instructions]
+
+    return all_instructions 
+
 
 def get_feedback_by_id(cursor,donor_location_id):
     """List all the feedback received from a donor_location
@@ -230,7 +250,7 @@ def get_feedback_by_date(conn,start_date,end_date):
 
     return feedbacks
 
-def get_instruction_by_rescue(cursor,donor_location_id,volunteer_comment):
+def get_instruction_by_rescue(cursor,donor_location_id,recipient_location_id,volunteer_comment):
     """Get a rescue, instruction, and comment
 
     Arguments:
@@ -247,14 +267,21 @@ def get_instruction_by_rescue(cursor,donor_location_id,volunteer_comment):
     comment = volunteer_comment
     recipient_location_id = random_feedback['recipient_location_id']
 
-    instruction = get_instructions_by_id(cursor,donor_location_id)[0]
+    donor_instruction = '. '.join(get_instructions_by_id_donor(cursor,donor_location_id))
+    recipient_instruction = '. '.join(get_instructions_by_id_recipient(cursor,recipient_location_id))
+    donor_instruction = donor_instruction.replace("\r","").replace("\n"," ")
+    recipient_instruction = recipient_instruction.replace("\r","").replace("\n","")
 
     donor_name = get_donor_name(cursor,donor_location_id)
     recipient_name = get_recipient_name(cursor,recipient_location_id)
 
-    return "For this rescue, the donor is {}, and its location is {}; the recipient is {}, and its location is {}. Instruction: {}. Comment: {}.".format(donor_name[1],donor_name[0],recipient_name[1],recipient_name[0],instruction,comment)
-
-
+    return "For this rescue, the donor is {}, and its location is {}; the recipient is {}, and its location is {}. Donor Instruction: {}. Recipient Instruction: {}. Comment: {}.".format(donor_name[1],
+                    donor_name[0],
+                    recipient_name[1],
+                    recipient_name[0],
+                    donor_instruction,
+                    recipient_instruction,
+                    comment)
 
 def get_random_rescue(cursor,donor_location_id):
     """Get a random rescue, instruction, and comment
@@ -271,12 +298,12 @@ def get_random_rescue(cursor,donor_location_id):
     comment = random_feedback['volunteer_comment']
     recipient_location_id = random_feedback['recipient_location_id']
 
-    instruction = get_instructions_by_id(cursor,donor_location_id)[0]
+    instruction = get_instructions_by_id_donor(cursor,donor_location_id)[0]
 
     donor_name = get_donor_name(cursor,donor_location_id)
     recipient_name = get_recipient_name(cursor,recipient_location_id)
 
-    return "For this rescue, the donor is {}, and its location is {}; the recipient is {}, and its location is {}. Instruction: {}. Comment: {}.".format(donor_name[1],donor_name[0],recipient_name[1],recipient_name[0],instruction,comment)
+    return "For this rescue, the donor is {}, and its location is {}; the recipient is {}, and its location is {}. Donor Instruction: {}. Recipient Instruction: {}. Comment: {}.".format(donor_name[1],donor_name[0],recipient_name[1],recipient_name[0],instruction,comment)
 
 def improve_instructions(client,cursor,info_dataframe):
     """Suggest a list of improvements to instructions, given instructions to improve
@@ -293,7 +320,12 @@ def improve_instructions(client,cursor,info_dataframe):
     for i in range(len(info_dataframe)):
         print("On {} out of {}".format(i+1,len(info_dataframe)))
         full_prompt = raw_prompt + "\n"+get_instruction_by_rescue(
-            cursor,info_dataframe.iloc[i].donor_location_id,info_dataframe.iloc[i].volunteer_comment)
+            cursor,info_dataframe.iloc[i].donor_location_id,
+            info_dataframe.iloc[i].recipient_location_id,info_dataframe.iloc[i].volunteer_comment)
+        old_instruction_donor =  '. '.join(get_instructions_by_id_donor(cursor,info_dataframe.iloc[i].donor_location_id))
+        old_instruction_recipient = '. '.join(get_instructions_by_id_recipient(cursor,info_dataframe.iloc[i].recipient_location_id))
+        old_instruction_donor = old_instruction_donor.replace("\r","").replace("\n"," ")
+        old_instruction_recipient = old_instruction_recipient.replace("\r","").replace("\n","")
 
         try:
             response = client.chat.completions.create(
@@ -303,8 +335,27 @@ def improve_instructions(client,cursor,info_dataframe):
             )
             output = response.choices[0].message.content
             feedback_info = json.loads(output)
-            new_instruction = feedback_info['info_update']
-            new_instructions.append(new_instruction)
+            new_instruction_donor = feedback_info['donor_info']
+            new_instruction_recipient = feedback_info['recipient_info']
+            donor_instruction_change = old_instruction_donor.strip(" .") != new_instruction_donor.strip(" .")
+            recipient_instruction_change = old_instruction_recipient.strip(" .") != new_instruction_recipient.strip(" .")
+            
+            if donor_instruction_change or recipient_instruction_change:
+                new_instructions.append({'donor_location_id': info_dataframe.iloc[i].donor_location_id, 
+                                        'donor_id': info_dataframe.iloc[i].donor_id, 
+                                        'donor_location_name': info_dataframe.iloc[i].donor_location_name, 
+                                        'donor_name': info_dataframe.iloc[i].donor_name, 
+                                        'recipient_location_id': info_dataframe.iloc[i].recipient_location_id, 
+                                        'recipient_location_name': info_dataframe.iloc[i].recipient_location_name, 
+                                        'recipient_name': info_dataframe.iloc[i].recipient_name, 
+                                        'volunteer_comment': info_dataframe.iloc[i].volunteer_comment,
+                                        'old_instruction_donor': old_instruction_donor, 
+                                        'old_instruction_recipient': old_instruction_recipient, 
+                                        'new_instruction_donor': new_instruction_donor, 
+                                        'new_instruction_recipient': new_instruction_recipient, 
+                                        'donor_instruction_change': donor_instruction_change,
+                                        'recipient_instruction_change': recipient_instruction_change})
+                print(feedback_info)
         except Exception as e:
             print(f"Error processing feedback {e}")
 
