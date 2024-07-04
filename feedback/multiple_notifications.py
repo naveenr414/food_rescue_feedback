@@ -114,8 +114,13 @@ def get_notification_text(volunteer_info,donor_info,recipient_info,trip_info,tri
                     donor_info['donor_location'][1],
                     volunteer_info['volunteer_location'][0],
                     volunteer_info['volunteer_location'][1]),1)
-
-
+    num_to_string = {
+        1: '1st',
+        2: '2nd',
+        3: '3rd',
+        4: '4th',
+        5: '5th'
+    }
     if volunteer_info['num_trips'] <= 4 and trip_difficulty == 4:
         return "A new trip is available that would be perfect for your {} trip. The trip has good reviews and is from {} in {} to {} in {}".format(num_to_string[volunteer_info['num_trips']+1],
             donor_info['donor_name'],

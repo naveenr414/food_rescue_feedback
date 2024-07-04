@@ -748,6 +748,15 @@ def get_db_data():
     return donation_id_to_latlon, recipient_location_to_latlon, rescues_by_user, all_rescue_data, user_id_to_latlon
 
 def get_user_ratings():
+    """Get the average rating by volunteer given to rescues
+        Both on a per-volunteer and a per-recipient basis
+    
+    Arguments: None
+    
+    Returns: Two Dictionaries: the first maps
+        user IDs to average rating, and the second maps
+        recipient IDs to average rating"""
+
     db_name = secret.database_name 
     username = secret.database_username 
     password = secret.database_password 
@@ -755,7 +764,6 @@ def get_user_ratings():
     port = secret.database_port
 
     connection_dict = open_connection(db_name,username,password,ip_address,port)
-    connection = connection_dict['connection']
     cursor = connection_dict['cursor']
     
     query = ("SELECT user_id, AVG(volunteer_rating) AS average_volunteer_rating FROM rescues WHERE volunteer_rating IS NOT NULL GROUP BY user_id")
@@ -773,6 +781,23 @@ def get_user_ratings():
     return user_id_to_volunteer_rating, recipient_id_to_volunteer_rating
 
 def get_trip_difficulty(user_id,donor_id,recipient_location_id,donation_id_to_latlon, recipient_location_to_latlon, rescues_by_user, user_id_to_latlon,user_id_to_volunteer_rating, recipient_id_to_volunteer_rating,rf_classifier):
+    """Given a rescue trip, and a set of metadata, predict the 
+        rescue "difficulty", or rating given by volunteers
+        
+    Arguments:
+        user_id: ID for the user completing the trip, integer
+        donor_id: ID for the donor, integer
+        recipient_location_id: ID for recipient location, integer
+        donation_id_to_latlon: Dictionary mapping donation_ids to locations
+        recipient_location_to_latlon: Dictionary mapping recipient locations to lat-lon
+        rescues_by_user: Dictionary mapping user IDs to rescues completed
+        user_id_to_latlon: Dictionary mapping user IDs to lat-lon
+        user_id_to_volunteer_rating: Dictionary mapping user IDs to avg. volunteer rating
+        recipient_id_to_volunteer_rating: Dictionary mapping recipient location IDs to avg. rating
+        rf_classifier: Classifier that predicts score from info on the user, recipient, and donor
+    
+    Returns: Integer, predicted rating"""
+    
     db_name = secret.database_name 
     username = secret.database_username 
     password = secret.database_password 
@@ -850,7 +875,8 @@ def get_data_predict_match(rescue,user_id, donation_id_to_latlon, recipient_loca
     return data_x 
 
 def get_data_predict_match_difficulty(rescue,user_id, donation_id_to_latlon, recipient_location_to_latlon, user_id_to_latlon, rescues_by_user,users_by_avg_rating,recipient_by_avg_rating):
-    """Get the features for a particular rescue-user combination
+    """Get the features for a particular rescue-user combination, 
+        used for predicting match difficulty
     
     Arguments:
         rescue: Dictionary of info for a particular rescue
@@ -1033,8 +1059,6 @@ def get_train_test_data_rating(rescues_by_user,donation_id_to_latlon, recipient_
 
     return train_X, train_Y, valid_X, valid_Y, test_X, test_Y
 
-
-
 def train_rf():
     """Train a Random Forest Classifier to predict match probabilities
     
@@ -1065,7 +1089,6 @@ def get_match_probs(rescue,user_ids,rf_classifier,donation_id_to_latlon, recipie
         user_id_to_latlon: Mapping user ids to lattitude and longitude
         rescues_by_user: List of rescues completed by each user 
     """
-
     
     data_points = []
     is_none = []
