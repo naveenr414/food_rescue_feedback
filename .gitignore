@@ -3,7 +3,7 @@ feedback.egg-info
 feedback/secret.py
 feedback/__pycache__/
 figures/
-results/
+results/reports/
 runs/
 __pycache__/
 data/

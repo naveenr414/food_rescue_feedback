@@ -385,7 +385,7 @@ def analyze_feedback(client, feedbacks, prompts, tasks):
         for task in tasks:
             try:
                 response = client.chat.completions.create(
-                    model="gpt-3.5-turbo-0125",
+                    model="gpt-4-turbo",
                     messages=[{"role": "user", "content": prompts[task] + comment}],
                     response_format={"type": "json_object"},
                 )
@@ -409,7 +409,7 @@ def generate_prompts_and_analyze_feedback(feedbacks):
     feedbacks = feedbacks[feedbacks['volunteer_comment'].notnull()]
 
     prompts = {}
-    tasks = ['recipient_problem', 'inadequate_food', 'donor_contact_problem', 'info_update']
+    tasks = ['recipient_problem', 'inadequate_food', 'donor_problem', 'info_update']
     for t in tasks:
         prompts[t] = open("../../data/prompts/{}.txt".format(t)).read()
 
