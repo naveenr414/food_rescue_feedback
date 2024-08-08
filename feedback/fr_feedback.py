@@ -375,17 +375,15 @@ def analyze_feedback(client, feedbacks, prompts, tasks):
     for i in range(len(feedbacks)):
         print("On feedback {} out of {}".format(i+1,len(feedbacks)))
         comment = (
-            f'For this rescue, the donor is {feedbacks.loc[i, "donor_name"]}'
-            f', and its location is {feedbacks.loc[i, "donor_location_name"]};'
-            f' the recipient is {feedbacks.loc[i, "recipient_name"]},'
-            f' and its location is {feedbacks.loc[i, "recipient_location_name"]}.'
+            f'For this rescue, the donor is {feedbacks.loc[i, "donor_name"]};'
+            f' the recipient is {feedbacks.loc[i, "recipient_name"]}.'
             f' Comment: {feedbacks.loc[i, "volunteer_comment"]}'
         )
 
         for task in tasks:
             try:
                 response = client.chat.completions.create(
-                    model="gpt-4-turbo",
+                    model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompts[task] + comment}],
                     response_format={"type": "json_object"},
                 )
@@ -409,8 +407,13 @@ def generate_prompts_and_analyze_feedback(feedbacks):
     feedbacks = feedbacks[feedbacks['volunteer_comment'].notnull()]
 
     prompts = {}
-    tasks = ['recipient_problem', 'inadequate_food', 'donor_problem', 'info_update']
+    tasks = ['recipient_problem', 'inadequate_food', 'donor_problem', 
+            'direction_problem','earlier_pickup','system_problem',
+            'update_contact']
     for t in tasks:
-        prompts[t] = open("../../data/prompts/{}.txt".format(t)).read()
+        prompts[t] = open("../../data/prompts/hierarchical_prompts/{}.txt".format(t)).read()
 
-    return analyze_feedback(client, feedbacks, prompts, tasks)
+    annotated_feedback = analyze_feedback(client, feedbacks, prompts, tasks)
+    annotated_feedback = annotated_feedback.rename(columns={'id': 'rescue_id'})[['rescue_id']+tasks]
+
+    return annotated_feedback
