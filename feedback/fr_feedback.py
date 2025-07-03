@@ -140,11 +140,14 @@ def generate_prompts_and_analyze_feedback(feedbacks,model_name,batch=False):
     feedbacks = feedbacks[feedbacks['volunteer_comment'].notnull()]
 
     prompts = {}
-    tasks = ['recipient_problem', 'inadequate_food', 'donor_problem', 
-            'direction_problem','earlier_pickup','system_problem',
-            'update_contact','positive_comment']
+    tasks = ['positive_comment']
+
+
+    # tasks = ['recipient_problem', 'inadequate_food', 'donor_problem', 
+    #         'direction_problem','earlier_pickup','system_problem',
+    #         'update_contact','positive_comment']
     for t in tasks:
-         prompts[t] = open("{}/prompts/{}.txt".format(os.path.dirname(__file__), t)).read()
+         prompts[t] = open("{}/../data/prompts/{}.txt".format(os.path.dirname(__file__), t)).read()
 
 
     if batch:
@@ -152,6 +155,7 @@ def generate_prompts_and_analyze_feedback(feedbacks,model_name,batch=False):
     else:
         annotated_feedback = analyze_feedback(client, feedbacks, prompts, tasks,model_name)
         annotated_feedback = annotated_feedback.rename(columns={'rescue_id': 'old_rescue_id'})
-        annotated_feedback = annotated_feedback.rename(columns={'id': 'owner_id'})[['owner_id']+tasks+['owner_type']]
+        annotated_feedback = annotated_feedback.rename(columns={'id': 'owner_id'})[['owner_id']+tasks]
+        # annotated_feedback = annotated_feedback.rename(columns={'id': 'owner_id'})[['owner_id']+tasks+['owner_type']]
 
     return annotated_feedback
