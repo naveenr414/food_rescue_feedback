@@ -41,23 +41,15 @@ if len(feedbacks) > 0:
         if v[0] not in all_vals:
             reduced_values.append(v)
             all_vals.add(v[0])
-    values = reduced_values
+    columns = list(annotated_feedback.columns)+['created_at','updated_at']
 
-    # columns = list(annotated_feedback.columns)+['created_at','updated_at']
+    values = [tuple(row)+(current_time,current_time) for row in annotated_feedback.to_numpy()]
 
-    # values = [tuple(row)+(current_time,current_time) for row in annotated_feedback.to_numpy()]
-
-    # insert_query = f"""
-    #     INSERT INTO rescue_feedback ({', '.join(columns)}) 
-    #     VALUES %s
-    #     ON CONFLICT DO NOTHING
-    # """
-
-    insert_query = """INSERT INTO rescue_feedback (owner_id, positive_comment)
-    VALUES %s
-    ON CONFLICT (owner_id)
-    DO UPDATE SET
-    positive_comment = EXCLUDED.positive_comment;"""
+    insert_query = f"""
+        INSERT INTO rescue_feedback ({', '.join(columns)}) 
+        VALUES %s
+        ON CONFLICT DO NOTHING
+    """
 
     execute_values(cursor, insert_query, values)
 connection.commit()

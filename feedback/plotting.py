@@ -27,6 +27,17 @@ color_schemes = {
                 (0.000, 0.750, 0.750, 0.7),
                 (0.400, 0.400, 0.400, 0.7)
                 ], 
+    'ten_color': [(0.216, 0.494, 0.722, 0.7),  # blue
+    (1.000, 0.498, 0.000, 0.7),  # orange
+    (0.302, 0.686, 0.290, 0.7),  # green
+    (0.894, 0.102, 0.110, 0.7),  # red
+    (0.596, 0.306, 0.639, 0.7),  # purple
+    (0.900, 0.800, 0.000, 0.7),  # yellow
+    (0.000, 0.750, 0.750, 0.7),  # teal
+    (0.400, 0.400, 0.400, 0.7),  # gray
+    (0.650, 0.337, 0.156, 0.7),  # brown
+    (0.200, 0.200, 0.600, 0.7)   # deep blue-violet
+, ],
         }
 markers = [".","v","^","s","*","x",".","v"]
 
@@ -228,7 +239,8 @@ def plot_line(ax,x_values,y_values,y_confidence,labels,formatting):
         if 'linestyle' in formatting:
             linestyle = formatting['linestyle']
         ax.plot(x_values[i],y_values[i],label=labels[i],linewidth=linewidth,color=colors[i],marker=marker,linestyle=linestyle)
-        ax.fill_between(x_values[i],np.array(y_values[i])-np.array(y_confidence[i]),np.array(y_values[i])+np.array(y_confidence[i]), alpha=0.2,color=colors[i])
+        if 'no_fill' not in formatting:
+            ax.fill_between(x_values[i],np.array(y_values[i])-np.array(y_confidence[i]),np.array(y_values[i])+np.array(y_confidence[i]), alpha=0.2,color=colors[i])
 
 def plot_scatter(ax,x_values,y_values,labels,formatting):
     """Create a line plot, based on the following:
@@ -389,9 +401,9 @@ def create_axes(plot_dimensions,formatting,x_labels=None,y_labels=None,titles=No
         title_size = 14
         tick_size = 14
     elif formatting['style_size'] == 'presentation':
-        label_size = 18
-        title_size = 18
-        tick_size = 14
+        label_size = 20
+        title_size = 20
+        tick_size = 20
     
     if 'label_size' in formatting:
         label_size = formatting['label_size']

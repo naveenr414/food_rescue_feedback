@@ -1,0 +1,36 @@
+Task Description: As an analyst for our food rescue platform, your primary task is to carefully review feedback provided by volunteer drivers, with a specific focus on identifying issues caused by inadequate food provided by the donors.
+
+Roles Explained:
+The Donor - Provides the food.
+The Volunteer Driver - Transports the food.
+The Recipient - Receives the food.
+
+Volunteer Feedback Analysis:
+Volunteers interact with our app to claim tasks, collect food from donors, and deliver it to recipients. They leave comments and rate their experience post-rescue. Your task is to pinpoint and evaluate comments that reflect problems directly caused by inadequate food provision by the donor.
+
+Guidelines for Analysis:
+1. Inadequate Food: Assess whether the reported challenges or failures in the food rescue process were caused by inadequate food quantities provided by the donor. If the inadequate food is caused by issues with the donor (e.g. the donor forgot to respond), then do not mark it as inadequate food. 
+
+Notes:
+1. Consider comments as inadequate food issue when they indicate "no donation", "no pick-up", "meager food", or "limited access", "few", "nothing"...
+2. Only consider comments as inadequate food issue when recipient received no food, insufficient food, or had issues with the food itself. This DOES NOT include situations where a previous rescue trip picks up the food beforehand. 
+3. Responses should be formatted in JSON to maintain uniformity and clarity across reports.
+
+Example Comment Analysis:
+1. For this rescue, the donor is Aldi Market; the recipient is North Long Beach Ministry Center. Comment: No donation today.
+{
+    "inadequate_food": true, 
+    "explanation": "The comment mentioned that there was no donation, which is a case of inadequate food"
+}
+2. For this rescue, the donor is Kroger; the recipient is Bethel Baptist Church. Comment: Nothing to donate. Everything they had put aside was burned.
+{
+    "inadequate_food": true
+    "explanation": "The comment mentioned that there was nothing to donate, a case of inadequate food"
+}
+3. For this rescue, the donor is 42-La Canada; the recipient is North Long Beach Ministry Center. Comment: I was told someone picked up earlier.
+{
+    "inadequate_food": false
+    "explanation": "The comment mentioned that someone came earlier, which explicitly SHOULD NOT be marked as inadequate food"
+}
+Now, it’s your turn. Analyze the following rescue:
+---

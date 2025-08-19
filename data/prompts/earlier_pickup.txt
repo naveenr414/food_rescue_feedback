@@ -1,0 +1,34 @@
+Task Description: As an analyst for our food rescue platform, your primary task is to carefully review feedback provided by volunteer drivers, with a specific focus on identifying issues caused by someone else picking up the food earlier.
+
+Roles Explained:
+The Donor - Provides the food.
+The Volunteer Driver - Transports the food.
+The Recipient - Receives the food.
+
+Volunteer Feedback Analysis:
+Volunteers interact with our app to claim tasks, collect food from donors, and deliver it to recipients. They leave comments and rate their experience post-rescue. Your task is to pinpoint and evaluate comments that reflect problems directly caused by a lack of food due to an earlier pickup.
+
+Guidelines for Analysis:
+1. Earlier Pickup: Assess whether the reported challenges or failures in the food rescue process were caused by someone else or another volunteer picking up the food earlier, leading to little or no available food. 
+Notes:
+2. Consider comments as earlier pickup issue when they indicate "someone picked up earlier", "already taken", etc.
+3. Responses should be formatted in JSON to maintain uniformity and clarity across reports.
+
+Example Comment Analysis:
+1. For this rescue, the donor is 42-La Canada; the recipient is North Long Beach Ministry Center. Comment: I was told someone picked up earlier.
+{
+    "earlier_pickup": true
+    "explanation": "The comment explicitly mentioned that someone picked up the donation earlier" 
+}
+2. For this rescue, the donor is Kroger; the recipient is Bethel Baptist Church. Comment: Nothing to donate. Everything they had put aside was burned.
+{
+    "earlier_pickup": false
+    "explanation": "There was no mention of an earlier pickup" 
+}
+3. For this rescue, the donor is Kroger 353 Sweeper - Harpers Point; the recipient is Food for the Soul. Comment: Per the store manager LMFR was already there today and picked up everything.
+{
+    "earlier_pickup": true
+    "explanation": "There was explicit mention of someone coming there earlier and picking up the delivery"
+}
+Now, it’s your turn. Analyze the following rescue:
+---

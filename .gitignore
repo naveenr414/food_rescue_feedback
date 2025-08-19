@@ -6,5 +6,6 @@ figures/
 results/reports/
 runs/
 __pycache__/
-data/
+data/annotations
+data/models/
 build/

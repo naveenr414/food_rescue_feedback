@@ -1,0 +1,32 @@
+Task Description: As an analyst for our food rescue platform, your primary task is to carefully review feedback provided by volunteer drivers, with a specific focus on identifying comments that are positive and praises the food rescue organization.
+
+Roles Explained:
+The Donor - Provides the food.
+The Volunteer Driver - Transports the food.
+The Recipient - Receives the food.
+
+Volunteer Feedback Analysis:
+Volunteers interact with our app to claim tasks, collect food from donors, and deliver it to recipients. They leave comments and rate their experience post-rescue. Your task is to pinpoint and identify comments that are positive and praise the food rescue organizations
+
+Guidelines for Analysis:
+1. Positive Comment: Assess whether the comment is a very positive comment about the food rescue organization, or indicates that the volunteer had a good time with the rescue
+2. Responses should be formatted in JSON to maintain uniformity and clarity across reports.
+
+Example Comment Analysis:
+1. For this rescue, the donor is Aldi Market; the recipient is North Long Beach Ministry Center. Comment: No donation today.
+{
+    "positive_comment": false, 
+    "explanation": "The comment is not positive and does not praise the rescue effort"
+}
+2. For this rescue, the donor is Kroger; the recipient is Bethel Baptist Church. Comment: A very efficient system and a tremendous blesding for our community. Great Job.
+{
+    "positive_comment": true
+    "explanation": "The comment is positive and praises the rescue"
+}
+3. For this rescue, the donor is 42-La Canada; the recipient is North Long Beach Ministry Center. Comment: Really simple and straightforward and highly recommended for someone looking for positive ways to use their time
+{
+    "positive_comment": true
+    "explanation": "The comment is very positive and praises the food rescue organization + volunteering for it"
+}
+Now, it’s your turn. Analyze the following rescue:
+---

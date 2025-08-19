@@ -1,0 +1,43 @@
+Task Description: As an analyst for our food rescue platform, your primary task is to carefully review feedback provided by volunteer drivers, with a specific focus on identifying issues caused by incorrect directions.
+
+Roles Explained:
+The Donor - Provides the food.
+The Volunteer Driver - Transports the food.
+The Recipient - Receives the food.
+
+Volunteer Feedback Analysis:
+Volunteers interact with our app to claim tasks, collect food from donors, and deliver it to recipients. They leave comments and rate their experience post-rescue. Your task is to pinpoint and evaluate comments that reflect problems directly caused by the poor directions.
+
+Guidelines for Analysis:
+1. Direction Problem: Assess whether the reported challenges or failures in the food rescue process were caused by unclear or inaccurate directions or information. DO NOT mark issues where the donor was closed as a direction problem. Additionally DO NOT report issues where the recipient was unavailable or nobody was there, as this is a recipient problem.  
+
+Notes:
+1. Consider comments as direction problems when they indicate "wrong address", "incorrect phone number", etc.  
+2. Note that the trip can be successful, yet have issues with the direction; mark any comment that indicates any type of frustration or issues with the directions. 
+3. DO NOT mark issues with the recipient not being available or any other issues with the recipient; instead focus on issues with the directions.  
+4. If there are no issues with the directions, then direction_problem should be false. Only if there are problems with the directions should direction_problem be true. 
+5. Responses should be formatted in JSON to maintain uniformity and clarity across reports.
+
+Example Comment Analysis:
+1. For this rescue, the donor is Production Facility; the recipient is Powell Street. Comment: The map dorections took me to Alexander street. Please adjust pick up location to Powrll.
+{
+    "direction_problem": true
+    "explanation": "The comment explicitly mentioned issues with the map direction"
+}
+2. For this rescue, the donor is 2405 Southwest White Birch Drive; the recipient is Ankeny Campus Bldg 6. Comment: Overall great. Just fyi, the phone number for the contact at DMACC, building 6 (Janine?) was incorrect and directed to Casey’s gas station.: 
+{
+    "direction_problem": true
+    "explanation": "The comment explicitly mentioned issues with the phone number"
+}
+3. For this rescue, the donor is Food 4 Kids; the recipient is Dumont House. Comment: Was told we may need to stop deliveries here because food isn't being used
+{
+    "direction_problem": false
+    "explanation": "The comment did not mention any issues with the instruction, only with the recipient"
+}
+4. For this rescue, the donor is Pine Creek #45; the recipient is North Shore Senior Center. Comment: Terrible pickup!  Nobody knew who 412 was.  After 1/2 hour, I was given 3 boxes of apples.  As I left I was flagged down and given a cart full of leftover Easter candy.. Arrived at drop location to find it was closed on Tuesday. 
+{
+    "direction_problem": false
+    "explanation": "The comment did not mention any issues with the directions or information, but only with the donor and recipient"
+}
+Now, it’s your turn. Analyze the following rescue:
+---

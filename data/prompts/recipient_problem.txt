@@ -1,0 +1,45 @@
+Task Description: As an analyst for our food rescue platform, your primary task is to carefully review feedback provided by volunteer drivers, with a specific focus on identifying issues caused by the recipients.
+
+Roles Explained:
+The Donor - Provides the food.
+The Volunteer Driver - Transports the food.
+The Recipient - Receives the food.
+
+Volunteer Feedback Analysis:
+Volunteers interact with our app to claim tasks, collect food from donors, and deliver it to recipients. They leave comments and rate their experience post-rescue. Your task is to pinpoint and evaluate comments that reflect problems directly caused by the recipients.
+
+Guidelines for Analysis:
+1. Recipient Problem: Assess whether the reported challenges or failures in the food rescue process were caused by communication issues or unavailable recipients. Examples of such problems include unavailable recipients, delays in finding the recipient, unused deliveries, etc. Make sure the issue is with the recipients, and NOT with the donor. 
+
+Notes:
+1. Consider comments as recipient problems when they indicate "no show", "recipient was closed", "bad dropoff." Mark comments where the interaction with the recipient was delayed as recipient problems. 
+2. Note that the trip can be successful, yet have issues with the recipient; mark any comment that indicates any type of frustration or communication issues when interacting with the recipient. Focus on issues between the recipient and the volunteer; if the recipient is having issues unrelated to the volunteer/rescue, then it should not be a recipient problem.
+3. DO NOT mark issues with the donor as recipient problems. For example, issues where there were no donations are typically donor problems. Additionally, issues with the pickup are associated with the donor; if the issue is with pickup then it is NOT a recipient problem. If someone else picked up the dontation earlier than the volunteer, then this IS NOT a recipient problem. 
+4. MAKE SURE you identify that the problem is with the recipient and not the donor. For example, if there's not much food rescued, then that is typically a donor issue, and not a recipient problem. Additionally if the problem is with PICKUP (for example, if there's a slow pickup), then it is NOT a recipient issue. 
+5. If the issue is with a grocery store or other place that typically DONATES (rather than receives) food, then it's probably a donor problem, and not a recipient problem. If the issue is with the way the food is placed in a container, with the amount of surplus, inadequate food, etc. then it's a DONOR problem and NOT a recipient problem.  
+6. Ignore any comments that discuss issues with getting a signature or closing out; that's typically unrelated to the recipient, as it has to do with the volunteer forgetting to close the app/rescue. 
+7. Responses should be formatted in JSON to maintain uniformity and clarity across reports.
+
+Example Comment Analysis:
+1. For this rescue, the donor is Cerritos; the recipient is North Long Beach Food Pantry. Comment: Food pantry was closed - someone at the carholic school took food to safely store
+{
+    "recipient_problem": true, 
+    "explanation": "The comment mentions that the food pantry was closed, indicating an issue with the recipient" 
+}
+2. For this rescue, the donor is Food 4 Kids; the recipient is Dumont House. Comment: Was told we may need to stop deliveries here because food isn't being used
+{
+    "recipient_problem": true, 
+    "explanation": "The comment mentions that the food isn't being used up by the recipient, indicating an issue with the recipient or the relationship with the recipient" 
+}
+3. For this rescue, the donor is Borderline Bagels; the recipient is Dumont House. Comment: Business said no one came last week so they discontinued donating
+{
+    "recipient_problem": false, 
+    "explanation": "The issue is on the donation side, which is the donor side. There is no mention of the recipient, so this is not a recipient problem"
+}
+4. For this rescue, the donor is SODEXO HIGHMARK STADIUM; the recipient is Unity Recovery. Comment: Just closing this out as someone else got here before i did to receive the pick- up.  And im guessing the ‘receiver’ wont be getting the donation.  😞
+{
+    "recipient_problem": false, 
+    "explanation": "The comment discusses an issue with the donation, as someone picked it up early. This not an issue with the recipient, so it should NOT be marked as a recipient problem." 
+}
+Now, it’s your turn. Analyze the following rescue:
+---

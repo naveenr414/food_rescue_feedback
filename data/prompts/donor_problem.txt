@@ -1,0 +1,65 @@
+Task Description: As an analyst for our food rescue platform, your primary task is to carefully review feedback provided by volunteer drivers, with a specific focus on identifying issues caused by the donors. Think carefully and make sure that the issue is with the DONOR and not the RECIPIENT. Make sure you first identify who the recipient and donor are, and whether the problem is with the recipient, donor, or both. 
+
+Roles Explained:
+The Donor - Provides the food.
+The Volunteer Driver - Transports the food.
+The Recipient - Receives the food.
+
+Volunteer Feedback Analysis:
+Volunteers interact with our app to claim tasks, collect food from donors, and deliver it to recipients. They leave comments and rate their experience post-rescue. Your task is to pinpoint and evaluate comments that reflect problems directly caused by the donors, but NOT due to inadequate food or an earlier pickup. 
+
+Guidelines for Analysis:
+1. Donor Problem: Assess whether the reported challenges or failures in the food rescue process were caused by communication issues with donors. If the problem is caused by issues with either inadequate food ("missing donation", "not enough food", "no donation", etc.) or an earlier pickup, then DO NOT mark it as a donor problem. DO NOT mark problems with dropoff or with the recipient as donor problems. 
+
+Notes:
+1. Consider comments as donor problems when they indicate "discontinued donations", "donor was closed", "bad pickup." Mark comments where the interaction with the donor was delayed as donor problems. Mark issues where the donor was closed as a donor problem.
+2. Note that the trip can be successful, yet have issues with the donor; mark any comment that indicates any type of frustration or communication issues when interacting with the donor. DO NOT mark comments with inadequate food or an earlier pickup as a donor problem. Additionally, DO NOT mark issues where too much food was given as a donor problem.
+3. MAKE SURE the problem is with the donor, and not the recipient. For example, if the problem is with dropoff, then the problem is with the recipient, and so is not a donor problem. Note that if the problem is with leaving food out, then it's a recipient problem, and NOT a donor problem. Typically, donors are places like shops, while recipients are places like food banks or schools.
+4. DO NOT mark issues that are either inadequate or no food (no donation available) or an earlier pickup (someone else picked up the donation before) as donor problem. Only mark problems that aren't related to these two issues. Additionally, DO NOT mark problems where multiple trips were required; this is typically just an indicator that there was a lot of food. 
+5. DO NOT MARK issues where there are no donations as donor problems, as these are inadequate food issues. For example if it says "no donations" then it is NOT a donor problem. 
+6. Ignore any issues having to do with closing out or closing the app; this has to do with closing the app, and is NOT relevant for donor problems. 
+7. Responses should be formatted in JSON to maintain uniformity and clarity across reports.
+
+Example Comment Analysis:
+1. For this rescue, the donor is Aldi Market; the recipient is North Long Beach Ministry Center. Comment: No donation today.
+{
+    "donor_problem": false, 
+    "explanation": "The problem mentions inadequate food, and you should not mark these as donor problems"
+}
+2. For this rescue, the donor is Borderline Bagels. Comment: Business said no one came last week so they discontinued donating
+{
+    "donor_problem": true, 
+    "explanation": "This is a permanent problem with the donor, as they discontinued donating, making it a donor problem"
+}
+3. For this rescue, the donor is 42-La Canada; the recipient is North Long Beach Ministry Center. Comment: I was told someone picked up earlier.
+{
+    "donor_problem": false, 
+    "explanation": "This is a problem with someone else picking up earlier, which we were told is not a donor problem"
+}
+4. For this rescue, the donor is Pine Creek #45; the recipient is North Shore Senior Center. Comment: Terrible pickup!  Nobody knew who 412 was.  After 1/2 hour, I was given 3 boxes of apples.  As I left I was flagged down and given a cart full of leftover Easter candy.. Arrived at drop location to find it was closed on Tuesday. 
+{
+    "donor_problem": true
+    "explanation": "The comment mentions a terrible pickup, which means its an issue with the donor"
+}
+5. For this rescue, the donor is Salem's Market & Grill; the recipient is St. Joseph's House of Hospitality. Comment: 2 weeks in a row no donations 
+{
+    "donor_problem": false,
+    "explanation": "The comment mentions an inadequate food issue (no donation), so this is NOT a donor problem."
+}
+6. For this rescue, the donor is El Super; the recipient is Elim Pantry. Comment: we spoke to the manager and he said no donations today. 
+{
+    "donor_problem": false,
+    "explanation": "The commentst mentions no donations, which is an inadequate food problem, and so NOT a donor problem"
+}
+7. For this rescue, the donor is Giant Eagle; the recipient is Refuge Community Church. Comment: Nobody here. Left all on dock. 4 rescues.
+{
+    "donor_problem": false,
+    "explanation": "The comment indicates that this was an issue with the dropoff, which indicates a recipient problem, and NOT a donor problem."
+}
+8. For this rescue, the donor is Swarthmore Co-op; the recipient is LOL lotsoflove. Comment: Left two messages to pick up the food left by the door (under canopy to try to keep it from getting rained on). 
+{
+    "donor_problem": false,
+    "explanation": "This comments is about the dropoff of food, not the pickup, so it is NOT a donor problem."
+}
+Now, it’s your turn. Analyze the following rescue:
+---

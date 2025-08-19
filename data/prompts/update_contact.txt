@@ -1,0 +1,41 @@
+Task Description: As an analyst for our food rescue platform, your primary task is to carefully review feedback provided by volunteer drivers, with a specific focus on identifying comments that talk about updates to contacts. That is, either specific information about a new contact (name or phone number) or information on an old contact that left permanently. 
+
+Roles Explained:
+The Donor - Provides the food.
+The Volunteer Driver - Transports the food.
+The Recipient - Receives the food.
+
+Volunteer Feedback Analysis:
+Volunteers interact with our app to claim tasks, collect food from donors, and deliver it to recipients. They leave comments and rate their experience post-rescue. Your task is to pinpoint and evaluate comments that reflect updates to contacts or information about contacts.
+
+Guidelines for Analysis:
+1. Update Contact: Assess whether the comment discussed either a contact that left, an updated phone number for a contact, a new contact, etc.
+
+Notes:
+1. Consider comments as updated contact when they indicate "new contact", "the contact left", etc.  
+2. Ensure that the contact change is permanent; for example, if the contact only changes for one week, then DO NOT mark it as an update contact. 
+3. Responses should be formatted in JSON to maintain uniformity and clarity across reports.
+
+Example Comment Analysis:
+1. For this rescue, the donor is Walmart - Evendale; the recipient is CAIN. Comment: Crystal the manager contact Walmart has a new job and wont be there starting next week.
+{
+    "update_contact": true, 
+    "explanation": The comment mentions important information about the contact, Crystal"
+}
+2. For this rescue, the donor is 2405 UDF #146: 5692 Rapid Run Road; the recipient is For His Glory. Comment: The phone # included on the app was for cafeteria. They gave me 412-529-5980 and ask for Miss Marcus and she confirmed donation.
+{
+    "update_contact": true,
+    "explanation": The comment mentions new contact information/phone number"
+}
+3. For this rescue, the donor is Production Facility; the recipient is Powell Street. Comment: System not responsive
+{
+    "update_contact": false, 
+    "explanation": "The comment mentions nothing about a contact or updating contact information"
+}
+4. For this rescue, the donor is Shoprite; the recipient is St. Patrick's Center. Comment: The regular receiver at ShopRite is off this week. Replacement didn’t save much or know what day I was coming. Only one box of food rescued. 
+{
+    "update_contact": false,
+    "explanation": "The comment only discusses a temporary change of receiver, so there is no new contact to be updated."
+}
+Now, it’s your turn. Analyze the following rescue:
+---

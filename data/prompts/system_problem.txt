@@ -1,0 +1,36 @@
+Task Description: As an analyst for our food rescue platform, your primary task is to carefully review feedback provided by volunteer drivers, with a specific focus on identifying issues caused by issues on the app.
+
+Roles Explained:
+The Donor - Provides the food.
+The Volunteer Driver - Transports the food.
+The Recipient - Receives the food.
+
+Volunteer Feedback Analysis:
+Volunteers interact with our app to claim tasks, collect food from donors, and deliver it to recipients. They leave comments and rate their experience post-rescue. Your task is to pinpoint and evaluate comments that reflect problems directly caused by issues with the app.
+
+Guidelines for Analysis:
+1. System Problem: Assess whether the reported challenges or failures in the food rescue process were caused by bugs or glitches on the food rescue app. DO NOT report issues that have to do with missing contacts, if they're not explicitly glitches in the app itself.
+
+Notes:
+1. Consider comments as system problems when they indicate "system not responsive", "glitch in the app", etc.  
+2. Responses should be formatted in JSON to maintain uniformity and clarity across reports.
+
+Example Comment Analysis:
+1. For this rescue, the donor is Production Facility; the recipient is Powell Street. Comment: System not responsive
+{
+    "system_problem": true, 
+    "explanation": "The comment explicitly mentions an issue with the system not being responsive"
+}
+2. For this rescue, the donor is 2405 UDF #146: 5692 Rapid Run Road; the recipient is For His Glory. Comment: The 7 crates were non food items. I tried to enter this in the app, (that it was non food items) but unable to do. 
+{
+    "system_problem": true, 
+    "explanation": "The comment explicitly mentions an issue with not being able to enter information into the app"
+
+}
+3. For this rescue, the donor is 2405 UDF #146: 5692 Rapid Run Road; the recipient is For His Glory. Comment: The phone # included on the app was for cafeteria. They gave me 412-529-5980 and ask for Miss Marcus and she confirmed donation.
+{
+    "system_problem": false, 
+    "explanation": "The issue that were reported related to contact information, not with issues with the app itself"
+}
+Now, it’s your turn. Analyze the following rescue:
+---
